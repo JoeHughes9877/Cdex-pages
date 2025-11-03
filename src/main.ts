@@ -11,7 +11,13 @@ const api = axios.create({
 
 createApp(App).mount('#app')
 
+function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function fetchData(searchTerm: string, searchCategory: string) {
+  if (searchTerm.length  < 3) { return }
+  await delay(500);
   const res = await api.get(`${searchCategory}`, {
     params: {
       q: searchTerm,
