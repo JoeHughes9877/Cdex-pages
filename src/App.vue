@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { fetchData } from '../src/main.ts'; 
 
-const data = ref<any[] | string>([]);
+const data = ref<any[]>([]);
 const searchTerm = ref('');
 const searchCategory = ref('/authors/');
 
