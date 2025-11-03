@@ -7,7 +7,7 @@ const searchTerm = ref('');
 
 watch(searchTerm, async (newValue) => {
   if (newValue.trim()) {
-    await fetchAllData(newValue);
+    await fetchAllData();
   }
 });
 
