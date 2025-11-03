@@ -9,6 +9,8 @@ const searchCategory = ref('/authors/');
 watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
   if (newTerm.trim()) {
     data.value = await fetchData(newTerm, newCategory);
+  } else {
+    data.value = []
   }
 });
  
