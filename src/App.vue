@@ -1,22 +1,34 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, watch } from 'vue';
+import { fetchAllData } from '../src/main.ts';
+
+const data = ref<any[] | string>([]);
+const searchTerm = ref('');
+
+watch(searchTerm, async (newValue) => {
+  if (newValue.trim()) {
+    await fetchAllData(newValue);
+  }
+});
 
 </script>
-
 <template>
   <div class="dark-registry">
     <h1>Cdex-pages</h1>
     
     <div class="search-container">
-      <input 
-        type="text" 
-        v-model="searchTerm" 
-        placeholder="Search..."
-        class="search-input"
-      />
-    </div>
-  </div>
+        <input
+          type="text"
+          v-model="searchTerm"
+          placeholder="Search..."
+          class="search-input"
+        />
+      </div>
 
+    <ul>
+      <li v-for="item in data" :key="item.id">{{ item.name }}</li>
+    </ul>
+  </div>
 </template>
 
 <style scoped>
@@ -81,7 +93,6 @@ h1 {
   color: #ffdddd;
 }
 
-/* --- Character Grid --- */
 .character-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
