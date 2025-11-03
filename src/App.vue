@@ -43,7 +43,7 @@ watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
         </div>
     </div>
 
-    <ul v-if="data.length" class="data-list">
+    <ul v-if="data && data.length" class="data-list">
       <li v-for="item in data" :key="item.id" class="data-list__item">
         {{ item.name }}
       </li>
@@ -53,6 +53,7 @@ watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
     </p>
   </div>
 </template>
+
 
 <style scoped>
 .dark-registry {
