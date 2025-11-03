@@ -4,14 +4,11 @@ import axios from 'axios';
 
 createApp(App).mount('#app')
 
-const API_URL = 'https://cdex.joe-hughes.dev';
-const AUTH_KEY = 'PmLKYSrMjKDVS5XzqC3lxQ';
-
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL:  import.meta.env.VUE_APP_API_URL,
   headers: {
-    Authorization: `Bearer ${AUTH_KEY}`,
-  },
+    Authorization: `Bearer ${ import.meta.env.VUE_APP_API_KEY}`,
+  }, 
 });
 
 export async function fetchAllData(searchTerm: string) {
@@ -21,4 +18,4 @@ export async function fetchAllData(searchTerm: string) {
     },
   });
   return res.data;
-}
+}  

@@ -15,4 +15,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  // 💡 ADD THIS LINE 
+  envPrefix: ['VITE_', 'VUE_APP_'], 
 })
