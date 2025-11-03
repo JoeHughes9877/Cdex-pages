@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fetchAllData } from '../src/main.ts';
+import { fetchData } from '../src/main.ts';
 
 const data = ref<any[] | string>([]);
 const searchTerm = ref('');
+const searchCategory = ref('/authors/');
 
-watch(searchTerm, async (newValue) => {
-  if (newValue.trim()) {
-    data.value = await fetchAllData(newValue); 
+watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
+  if (newTerm.trim()) {
+    data.value = await fetchData(newTerm, newCategory);
   } else {
     data.value = [];
   }
@@ -25,7 +26,22 @@ watch(searchTerm, async (newValue) => {
           placeholder="Search..."
           class="search-input"
         />
-      </div>
+        
+        <div class="category-dropdown">
+          <label for="category-select">Scope:</label>
+          <select 
+            id="category-select" 
+            v-model="searchCategory"
+            class="search-select"
+          >
+            <option value="/authors/">Authors</option>
+            <option value="/worlds/">Worlds</option>
+            <option value="/series/">Series</option>
+            <option value="/characters/">Characters</option>
+            <option value="/quotes/">Quotes</option>
+          </select>
+        </div>
+    </div>
 
     <ul>
       <li v-for="item in data" :key="item.id">{{ item.name }}</li>
@@ -79,6 +95,38 @@ h1 {
     outline: none;
 }
 
+/* --- NEW Dropdown Styles --- */
+.category-dropdown {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #e0e0ff;
+    font-size: 0.95em;
+}
+
+.search-select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #4a4e69;
+    background-color: #1a1a2e;
+    color: #a29bfe;
+    font-family: 'Arial Black', sans-serif;
+    cursor: pointer;
+    appearance: none; /* Remove default arrow for better custom styling */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    min-width: 150px;
+}
+
+.search-select:focus {
+    border-color: #a29bfe; 
+    outline: none;
+    box-shadow: 0 0 5px rgba(162, 155, 254, 0.5); 
+}
+/* --- End Dropdown Styles --- */
+
 .registry-message {
   padding: 20px;
   text-align: center;
@@ -88,6 +136,8 @@ h1 {
   color: #bdc3c7;
   font-style: normal;
 }
+
+/* ... (Rest of your existing styles for .registry-message, .character-grid, etc. remain the same) ... */
 
 .registry-message.error {
   background-color: #3c1c2e;
