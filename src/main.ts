@@ -14,7 +14,11 @@ const api = axios.create({
   },
 });
 
-export async function fetchAllData() {
-  const res = await api.get('/authors/');
+export async function fetchAllData(searchTerm: string) {
+  const res = await api.get('/authors/', {
+    params: {
+      search: searchTerm,
+    },
+  });
   return res.data;
 }
