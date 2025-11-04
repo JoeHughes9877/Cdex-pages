@@ -17,7 +17,7 @@ function delay(ms: number): Promise<void> {
 
 export async function fetchData(searchTerm: string, searchCategory: string) {
   try {
-    await delay(500);
+    await delay(1000);
     const res = await api.get(`${searchCategory}`, {
       params: {
         q: searchTerm,
