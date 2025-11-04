@@ -2,58 +2,68 @@
 import { ref, watch } from 'vue';
 import { fetchData } from '../src/main.ts'; 
 
-const data = ref<any[]>([]);
 const searchTerm = ref('');
 const searchCategory = ref('/authors/');
+const searchQuery = ref('');
+const searchCategoryQuery = ref('/authors/');
+const data = ref<any[]>([]);
 
-watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
+watch([searchQuery, searchCategoryQuery], async ([newTerm, newCategory]) => {
   if (newTerm.trim()) {
     data.value = await fetchData(newTerm, newCategory);
   } else {
-    data.value = []
+    data.value = [];
   }
-});
- 
+}, { immediate: true });
+
+const performSearch = () => {
+  searchQuery.value = searchTerm.value;
+  searchCategoryQuery.value = searchCategory.value;
+};
 </script>
+
 <template>
   <div class="dark-registry">
     <h1 class="registry__title">Cdex-pages</h1>
-    
     <div class="search-container">
-        <input
-          type="text"
-          v-model="searchTerm"
-          placeholder="Search entries..."
-          class="search-container__input"
-        />
-        
-        <div class="search-container__scope">
-          <label for="category-select" class="search-container__label">Scope:</label>
-          <select 
-            id="category-select" 
-            v-model="searchCategory"
-            class="search-container__select"
-          >
-            <option value="/authors/">Authors</option>
-            <option value="/worlds/">Worlds</option>
-            <option value="/series/">Series</option>
-            <option value="/characters/">Characters</option>
-            <option value="/quotes/">Quotes</option>
-          </select>
-        </div>
+      <input
+        type="text"
+        v-model="searchTerm"
+        placeholder="Search entries..."
+        class="search-container__input"
+        @keyup.enter="performSearch" />
+      <div class="search-container__scope">
+        <label for="category-select" class="search-container__label">Scope:</label>
+        <select 
+          id="category-select" 
+          v-model="searchCategory"
+          class="search-container__select"
+        >
+          <option value="/authors/">Authors</option>
+          <option value="/worlds/">Worlds</option>
+          <option value="/series/">Series</option>
+          <option value="/characters/">Characters</option>
+          <option value="/quotes/">Quotes</option>
+        </select>
+      </div>
+      <button 
+        @click="performSearch" 
+        class="search-container__button"
+        :disabled="!searchTerm.trim()"
+      >
+        Search
+      </button>
     </div>
-
     <ul v-if="data && data.length" class="data-list">
       <li v-for="item in data" :key="item.id" class="data-list__item">
         {{ item.name }}
       </li>
     </ul>
-    <p v-else-if="searchTerm.trim() && !data.length" class="data-list__message">
-        No results found for "{{ searchTerm }}".
+    <p v-else-if="searchQuery.trim() && !data.length" class="data-list__message">
+      No results found for "{{ searchQuery }}".
     </p>
   </div>
 </template>
-
 
 <style scoped>
 .dark-registry {
@@ -66,7 +76,6 @@ watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
   --color-accent-hover: #00a8b6;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
-  
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   padding: var(--spacing-lg);
@@ -113,8 +122,8 @@ watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
 }
 
 .search-container__label {
-    color: var(--color-text-secondary);
-    white-space: nowrap;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
 }
 
 .search-container__select {
@@ -130,8 +139,30 @@ watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
 }
 
 .search-container__select:focus {
-    border-color: var(--color-accent);
-    outline: none;
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.search-container__button {
+  padding: 12px 20px;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.search-container__button:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+.search-container__button:disabled {
+  background-color: var(--color-border);
+  cursor: not-allowed;
 }
 
 .data-list {
@@ -149,18 +180,17 @@ watch([searchTerm, searchCategory], async ([newTerm, newCategory]) => {
 }
 
 .data-list__item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .data-list__item:hover {
-    background-color: #2c2c2d;
-    color: var(--color-text-primary);
+  background-color: #2c2c2d;
+  color: var(--color-text-primary);
 }
 
 .data-list__message {
-    color: var(--color-text-secondary);
-    padding: var(--spacing-md);
-    text-align: center;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-md);
+  text-align: center;
 }
-
 </style>
