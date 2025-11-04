@@ -25,6 +25,7 @@ const performSearch = () => {
 <template>
   <div class="dark-registry">
     <h1 class="registry__title">Cdex-pages</h1>
+    <p class="api-status-note">Hosting for Cdex api is using render's free option so the first api call may take a minute.</p>
     <div class="search-container">
       <input
         type="text"
@@ -89,6 +90,17 @@ const performSearch = () => {
   margin-bottom: var(--spacing-lg);
   padding-bottom: 10px;
   border-bottom: 2px solid var(--color-border);
+}
+
+/* Added styling for the API status note */
+.api-status-note {
+  margin-bottom: var(--spacing-lg);
+  padding: 10px 15px;
+  background-color: #2c2c2d; /* Slightly different background to stand out */
+  color: var(--color-text-secondary);
+  border-left: 4px solid var(--color-accent); /* Accent color border for emphasis */
+  border-radius: 4px;
+  font-size: 0.95rem;
 }
 
 .search-container {
