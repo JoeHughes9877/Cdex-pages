@@ -1,42 +1,85 @@
-# cdex-pages
+# 📚 Cdex-pages: API Registry Search Interface
 
-This template should help get you started developing with Vue 3 in Vite.
+Cdex-pages is a single-page application built with **Vue 3** that serves as a search interface for the Cdex API registry. It allows users to search for entries across various categories like authors, worlds, and characters.
 
-## Recommended IDE Setup
+## 🚀 Deployment & Access
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+This application is deployed and accessible via the cloud at the following URL:
+**pages.joe-hughes.dev**
 
-## Recommended Browser Setup
+---
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## ✨ Features
 
-## Type Support for `.vue` Imports in TS
+* **Scoped Search:** Search across multiple categories: **Authors**, **Worlds**, **Series**, **Characters**, and **Quotes**.
+* **Reactive Filtering:** Search results update based on the entered search term and selected category.
+* **API Integration:** Uses **Axios** to fetch data from a protected external API endpoint.
+* **User Experience:** Clear display of results or a "no results found" message.
+* **Dark Theme:** A clean, dark interface for easy viewing.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+---
 
-## Customize configuration
+## ⚙️ Setup and Installation (For Local Development)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+This project requires a standard Node.js environment and package manager (npm or yarn).
 
-## Project Setup
+### Prerequisites
 
-```sh
-npm install
-```
+* Node.js (LTS recommended)
+* A package manager (npm, yarn, or pnpm)
 
-### Compile and Hot-Reload for Development
+### Installation Steps
 
-```sh
-npm run dev
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone [repository-url]
+    cd cdex-pages
+    ```
 
-### Type-Check, Compile and Minify for Production
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-```sh
-npm run build
-```
+3.  **Configure Environment Variables:**
+    The application relies on environment variables for API connection. Create a file named **`.env`** in the project root and populate it with the following variables:
+
+    ```
+    VUE_APP_API_URL="[Your API Base URL here, e.g., [https://api.cdexregistry.com/](https://api.cdexregistry.com/)]"
+    VUE_APP_API_KEY="[Your API Bearer Key here]"
+    ```
+    *The `VUE_APP_API_URL` is used as the base URL for Axios.*
+    *The `VUE_APP_API_KEY` is used to create the `Authorization: Bearer <key>` header for secure API calls.*
+
+4.  **Run the application:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+    The application will typically be available at `http://localhost:5173/` (or similar port).
+
+---
+
+## 🚀 Usage
+
+The application is straightforward to use:
+
+1.  **Enter a Search Term:** Type your query into the text input field.
+2.  **Select a Scope:** Use the **"Scope"** dropdown to select the category you want to search within (e.g., Authors, Worlds).
+3.  **Perform Search:**
+    * Click the **"Search"** button.
+    * Alternatively, press the **Enter** key while the input field is focused.
+
+The search results will be displayed as a list below the search bar. If no results are found, a corresponding message will appear.
+
+> **Note:** As mentioned in the application interface, "Hosting for Cdex api is using render's free option so the first api call may take a minute." If your initial search takes a moment, please be patient as the backend service may be waking up.
+
+---
+
+## 📁 Project Structure
+
+* `src/main.ts`: Initializes the Vue app, configures the **Axios API client** with environment variables, and exports the `fetchData` function used for making API requests.
+* `src/App.vue`: The main component containing the **search interface (HTML)**, **search logic (Composition API)**, and **styling (CSS)**. It manages the search state and displays results.
