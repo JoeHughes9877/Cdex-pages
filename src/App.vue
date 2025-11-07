@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fetchData } from '../src/main.ts'; 
+import { fetchData } from '../src/main.ts';
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 
 const searchTerm = ref('');
 const searchCategory = ref('/authors/');
@@ -55,11 +57,12 @@ const performSearch = () => {
         Search
       </button>
     </div>
-    <ul v-if="data && data.length" class="data-list">
-      <li v-for="item in data" :key="item.id" class="data-list__item">
-        {{ item.name }}
-      </li>
-    </ul>
+<ul v-if="data && data.length" class="data-list">
+  <li v-for="item in data" :key="item.id" class="data-list__item">
+    <pre>{{ Object.entries(item).map(([key, value]) => `${key}: ${value}`).join('\n') }}</pre>
+  </li>
+</ul>
+
     <p v-else-if="searchQuery.trim() && !data.length" class="data-list__message">
       No results found for "{{ searchQuery }}".
     </p>
@@ -92,13 +95,12 @@ const performSearch = () => {
   border-bottom: 2px solid var(--color-border);
 }
 
-/* Added styling for the API status note */
 .api-status-note {
   margin-bottom: var(--spacing-lg);
   padding: 10px 15px;
-  background-color: #2c2c2d; /* Slightly different background to stand out */
+  background-color: #2c2c2d; 
   color: var(--color-text-secondary);
-  border-left: 4px solid var(--color-accent); /* Accent color border for emphasis */
+  border-left: 4px solid var(--color-accent); 
   border-radius: 4px;
   font-size: 0.95rem;
 }
