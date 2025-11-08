@@ -1,6 +1,6 @@
 # 📚 Cdex-pages: API Registry Search Interface
 
-Cdex-pages is a single-page application built with **Vue 3** that serves as a search interface for the Cdex API registry. It allows users to search for entries across various categories like authors, worlds, and characters.
+Cdex-pages is a single-page application built with **Vue 3** and  **BootStrap** that serves as a search interface for the Cdex API registry. It allows users to search for entries across various categories like authors, worlds, and characters.
 
 ## 🚀 Deployment & Access
 
@@ -50,8 +50,8 @@ This project requires a standard Node.js environment and package manager (npm or
     VUE_APP_API_URL="[Your API Base URL here, e.g., [https://api.cdexregistry.com/](https://api.cdexregistry.com/)]"
     VUE_APP_API_KEY="[Your API Bearer Key here]"
     ```
-    *The `VUE_APP_API_URL` is used as the base URL for Axios.*
-    *The `VUE_APP_API_KEY` is used to create the `Authorization: Bearer <key>` header for secure API calls.*
+    *The `VITE_APP_API_URL` is used as the base URL for Axios.*
+    *The `VITE_APP_API_KEY` is used to create the `Authorization: Bearer <key>` header for secure API calls.*
 
 4.  **Run the application:**
     ```bash
