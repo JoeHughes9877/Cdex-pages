@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fetchData } from '../src/main.ts';
-import VueJsonPretty from 'vue-json-pretty';
+import { fetchData } from './main.js';
 import 'vue-json-pretty/lib/styles.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const searchTerm = ref('');
 const searchCategory = ref('/authors/');
 const searchQuery = ref('');
 const searchCategoryQuery = ref('/authors/');
-const data = ref<any[]>([]);
+const data = ref<any[]>([]); 
+const isLoading = ref(false);
 
 watch([searchQuery, searchCategoryQuery], async ([newTerm, newCategory]) => {
   if (newTerm.trim()) {
+    isLoading.value = true;
     data.value = await fetchData(newTerm, newCategory);
+    isLoading.value = false;
+    console.log("Search performed, data received:", data.value);
   } else {
     data.value = [];
   }
@@ -25,186 +29,130 @@ const performSearch = () => {
 </script>
 
 <template>
-  <div class="dark-registry">
-    <h1 class="registry__title">Cdex-pages</h1>
-    <p class="api-status-note">Hosting for Cdex api is using render's free option so the first api call may take a minute.</p>
-    <div class="search-container">
-      <input
-        type="text"
-        v-model="searchTerm"
-        placeholder="Search entries..."
-        class="search-container__input"
-        @keyup.enter="performSearch" />
-      <div class="search-container__scope">
-        <label for="category-select" class="search-container__label">Scope:</label>
-        <select 
-          id="category-select" 
-          v-model="searchCategory"
-          class="search-container__select"
-        >
-          <option value="/authors/">Authors</option>
-          <option value="/worlds/">Worlds</option>
-          <option value="/series/">Series</option>
-          <option value="/characters/">Characters</option>
-          <option value="/quotes/">Quotes</option>
-        </select>
-      </div>
-      <button 
-        @click="performSearch" 
-        class="search-container__button"
-        :disabled="!searchTerm.trim()"
-      >
-        Search
-      </button>
-    </div>
-<ul v-if="data && data.length" class="data-list">
-  <li v-for="item in data" :key="item.id" class="data-list__item">
-    <pre>{{ Object.entries(item).map(([key, value]) => `${key}: ${value}`).join('\n') }}</pre>
-  </li>
-</ul>
+  <div class="app-ultra-minimal text-light min-vh-100 d-flex flex-column align-items-center justify-content-center px-3">
+    
+    <div class="col-12 col-md-10 col-lg-8">
+        
+        <h1 class="text-danger fw-light fs-3 mb-2 text-center text-uppercase tracking-wide">Cdex-pages</h1>
 
-    <p v-else-if="searchQuery.trim() && !data.length" class="data-list__message">
-      No results found for "{{ searchQuery }}".
-    </p>
+        <p class="text-muted small mb-5 text-center">
+            The first API call may take a moment.
+        </p>
+
+        <div class="input-group input-group-lg search-line-minimal mb-4">
+            
+            <select 
+                v-model="searchCategory"
+                class="form-select bg-transparent text-danger border-end-0 fw-bold minimal-select-ultra"
+                style="max-width: 150px;"
+            >
+                <option value="/authors/">Authors</option>
+                <option value="/worlds/">Worlds</option>
+                <option value="/series/">Series</option>
+                <option value="/characters/">Characters</option>
+                <option value="/quotes/">Quotes</option>
+            </select>
+            
+            <input
+                type="text"
+                v-model="searchTerm"
+                placeholder="Search entries..."
+                class="form-control bg-transparent text-light border-start-0 border-end-0 minimal-input-ultra"
+                @keyup.enter="performSearch" 
+            />
+
+            <button 
+                @click="performSearch" 
+                class="btn btn-outline-danger px-4 fw-light minimal-btn-ultra"
+                :disabled="!searchTerm.trim() || isLoading"
+            >
+                <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isLoading ? 'Loading...' : 'Search' }}
+            </button>
+        </div>
+
+        <div v-if="isLoading" class="text-center text-danger py-4">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 small text-muted">Fetching data...</p>
+        </div>
+
+          <ul v-else-if="data && data.length" class="list-group list-group-flush border-top border-bottom border-secondary mt-3">
+              <li 
+                  v-for="(item, index) in data" 
+                  :key="item.id" 
+                  :class="['list-group-item bg-transparent text-muted px-2 py-3', { 'border-top-0': index !== 0 }]"
+              >
+                  <pre class="d-block text-break text-light p-2 mb-0 result-pre">{{ Object.entries(item).map(([key, value]) => `${key}: ${value}`).join('\n') }}</pre>
+              </li>
+          </ul> 
+
+        <p v-else-if="searchQuery.trim() && !data.length && !isLoading" class="text-center text-muted p-5">
+            No results found for "<span class="text-danger fw-bold">{{ searchQuery }}</span>".
+        </p>
+        
+    </div>
+    
   </div>
 </template>
 
-<style scoped>
-.dark-registry {
-  --color-bg: #1e1e1e;
-  --color-surface: #252526;
-  --color-text-primary: #f0f0f0;
-  --color-text-secondary: #b0b0b0;
-  --color-border: #3c3c3c;
-  --color-accent: #00bcd4;
-  --color-accent-hover: #00a8b6;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  padding: var(--spacing-lg);
-  min-height: 100vh;
+<style>
+/* Global Styles for Ultra Minimalist Dark Theme */
+
+/* Darkest background for high contrast with the black components */
+.app-ultra-minimal {
+  background-color: #000000 !important;
 }
 
-.registry__title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  margin-bottom: var(--spacing-lg);
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--color-border);
+/* Custom black background for input components */
+.bg-transparent {
+    background-color: #111111 !important;
 }
 
-.api-status-note {
-  margin-bottom: var(--spacing-lg);
-  padding: 10px 15px;
-  background-color: #2c2c2d; 
-  color: var(--color-text-secondary);
-  border-left: 4px solid var(--color-accent); 
-  border-radius: 4px;
-  font-size: 0.95rem;
+/* Style for the entire search component line */
+.search-line-minimal .form-control,
+.search-line-minimal .form-select,
+.search-line-minimal .btn {
+    border-color: #333333 !important; /* Extremely subtle gray border */
+    border-radius: 0 !important; /* Sharp corners */
 }
 
-.search-container {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  align-items: center;
+/* Red focus/hover */
+.minimal-input-ultra:focus, 
+.minimal-select-ultra:focus,
+.minimal-btn-ultra:hover {
+  box-shadow: none !important;
+  border-color: #dc3545 !important; /* Bootstrap 'danger' red */
 }
 
-.search-container__input {
-  flex-grow: 1;
-  padding: 12px 15px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
+/* Remove internal borders to make it look like a single bar */
+.search-line-minimal .form-select {
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
 }
 
-.search-container__input:focus {
-  border-color: var(--color-accent);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.3);
+.search-line-minimal .minimal-btn-ultra {
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
 }
 
-.search-container__scope {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* Subtle text effect for title */
+.tracking-wide {
+    letter-spacing: 0.25em;
 }
 
-.search-container__label {
-  color: var(--color-text-secondary);
-  white-space: nowrap;
+/* Minimalist Result Styling */
+.result-pre {
+    background-color: #0c0c0c !important; /* Slightly darker than input background */
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+    padding: 1rem !important;
+    line-height: 1.4;
 }
-
-.search-container__select {
-  padding: 12px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  appearance: none;
-  cursor: pointer;
-  min-width: 120px;
-  transition: border-color 0.3s;
-}
-
-.search-container__select:focus {
-  border-color: var(--color-accent);
-  outline: none;
-}
-
-.search-container__button {
-  padding: 12px 20px;
-  background-color: var(--color-accent);
-  color: var(--color-bg);
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  white-space: nowrap;
-}
-
-.search-container__button:hover:not(:disabled) {
-  background-color: var(--color-accent-hover);
-}
-
-.search-container__button:disabled {
-  background-color: var(--color-border);
-  cursor: not-allowed;
-}
-
-.data-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.data-list__item {
-  padding: 14px 15px;
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 1.05rem;
-  transition: background-color 0.2s;
-}
-
-.data-list__item:last-child {
-  border-bottom: none;
-}
-
-.data-list__item:hover {
-  background-color: #2c2c2d;
-  color: var(--color-text-primary);
-}
-
-.data-list__message {
-  color: var(--color-text-secondary);
-  padding: var(--spacing-md);
-  text-align: center;
+.list-group-item {
+    border-color: #1a1a1a !important;
 }
 </style>
