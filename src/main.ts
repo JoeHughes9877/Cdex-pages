@@ -3,9 +3,9 @@ import App from './App.vue'
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VUE_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL, 
   headers: {
-    Authorization: `Bearer ${import.meta.env.VUE_APP_API_KEY}`,
+    Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`,
   },
 });
 
@@ -18,12 +18,10 @@ function delay(ms: number): Promise<void> {
 export async function fetchData(searchTerm: string, searchCategory: string) {
   try {
     const res = await api.get(`${searchCategory}`, {
-      params: {
-        q: searchTerm,
-      },
+      params: { q: searchTerm },
     });
-      return res.data;
-  } catch {
+    return res.data;
+  } catch (err) {
     return [];
   }
 }
